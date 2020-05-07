@@ -1,5 +1,5 @@
-adb\_shell
-==========
+aio\_adb\_shell
+===============
 
 .. image:: https://travis-ci.com/JeffLIrion/aio_adb_shell.svg?branch=master
    :target: https://travis-ci.com/JeffLIrion/aio_adb_shell
@@ -8,7 +8,7 @@ adb\_shell
    :target: https://coveralls.io/github/JeffLIrion/aio_adb_shell?branch=master
 
 
-Documentation for this package can be found at https://adb-shell.readthedocs.io/.
+Documentation for this package can be found at https://aio-adb-shell.readthedocs.io/.
 
 This Python package implements ADB shell and FileSync functionality.  It originated from `python-adb <https://github.com/google/python-adb>`_.
 
@@ -17,7 +17,7 @@ Installation
 
 .. code-block::
 
-   pip install adb-shell
+   pip install aio-adb-shell
 
 
 Example Usage
