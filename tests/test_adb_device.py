@@ -16,6 +16,15 @@ from .async_wrapper import awaiter
 from .filesync_helpers import FileSyncMessage, FileSyncListMessage, FileSyncStatMessage
 from .keygen_stub import open_priv_pub
 
+try:
+    from unittest.mock import AsyncMock
+except ImportError:
+    from unittest.mock import MagicMock
+
+    class AsyncMock(MagicMock):
+        async def __call__(self, *args, **kwargs):
+            return super(AsyncMock, self).__call__(*args, **kwargs)
+
 
 # https://stackoverflow.com/a/7483862
 _LOGGER = logging.getLogger('aio_adb_shell.adb_device')
@@ -55,6 +64,9 @@ class TestAdbDevice(unittest.TestCase):
         with self.assertRaises(exceptions.AdbConnectionError):
             async_generator = self.device.streaming_shell('FAIL')
             await async_generator.__anext__()
+
+        with self.assertRaises(exceptions.AdbConnectionError):
+            await self.device.root()
 
         with self.assertRaises(exceptions.AdbConnectionError):
             await self.device.list('FAIL')
@@ -481,6 +493,20 @@ class TestAdbDevice(unittest.TestCase):
         async_generator = self.device.streaming_shell('TEST', decode=False)
         self.assertEqual(await async_generator.__anext__(), b'ABC')
         self.assertEqual(await async_generator.__anext__(), b'123')
+
+
+    # ======================================================================= #
+    #                                                                         #
+    #                               `root` test                               #
+    #                                                                         #
+    # ======================================================================= #
+    @awaiter
+    async def test_root(self):
+        self.assertTrue(await self.device.connect())
+
+        with patch('aio_adb_shell.adb_device.AdbDevice._service', new_callable=AsyncMock) as patch_service:
+            await self.device.root()
+            patch_service.assert_called_once()
 
 
     # ======================================================================= #
